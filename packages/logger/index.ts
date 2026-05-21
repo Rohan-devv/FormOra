@@ -1,7 +1,9 @@
 import winston from "winston";
 import { env } from "./env";
 
-type LoggerLevel = "error" | "info" | "debug";
+type LoggerLevel = "error" | "info" | "debug"; 
+
+// This is a comment 
 
 const level: LoggerLevel =
   env.LOGGER_LEVEL ?? (env.NODE_ENV === "development" ? "debug" : "error");
