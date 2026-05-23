@@ -7,6 +7,10 @@ import {
   generateUserTokenPayload,
   GenerateUserTokenPayloadType,
   
+  signInUserWithEmailandPasswordInput,
+  
+  signInUserWithEmailandPasswordInputType,
+  
   type CreateUserWithEmailandPasswordInputType,
 } from "./model"; 
 
@@ -22,7 +26,7 @@ class UserService {
   private async generateUserToken (payload: GenerateUserTokenPayloadType) { 
      const {id} = await generateUserTokenPayload.parseAsync(payload)  
      const token = JWT.sign({id}, env.JWT_SECRET)
-     return {token } 
+     return {token} 
   } 
   
   public async createUserWithEmailandPassword(payload: CreateUserWithEmailandPasswordInputType) {
@@ -51,6 +55,30 @@ class UserService {
       id: userId,
       token
     };
+  }  
+
+  public async signInUserWithEmailAndPassword(payload: signInUserWithEmailandPasswordInputType){
+    const {email, password} = await signInUserWithEmailandPasswordInput.parseAsync(payload) 
+    const existingUser = await this.getUserByEmail(email)
+
+    if(!existingUser) throw new Error(`User with ${email} already exist`) 
+
+    if(!existingUser.password || !existingUser.salt)
+      throw new Error(`User password or salt is missing`)  
+
+     const hash = createHmac("sha256", existingUser.salt).update(password).digest("hex");  
+
+     if(hash !== existingUser.password) throw new Error(`Invalid email or password`) 
+
+      const {token} = await this.generateUserToken({id: existingUser.id})  
+
+      return {
+        id: existingUser.id,
+        token
+      }
+
+
+
   }
 }
 

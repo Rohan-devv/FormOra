@@ -50,7 +50,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
     }
      if (!v.confirmPassword.trim()) {
       // add validation error handling here
-      e.confirmPassword = "Password do not required"
+      e.confirmPassword = "Password do not matched"
     }
 
     return e
@@ -191,7 +191,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
             Sign up with GitHub
           </Button>
           <FieldDescription className="px-6 text-center text-zinc-500 [&_a]:text-zinc-200 [&_a:hover]:text-violet-300">
-            Already have an account? <a href="#">Sign in</a>
+            Already have an account? <a href="login">Sign in</a>
           </FieldDescription>
         </Field>
       </FieldGroup>
