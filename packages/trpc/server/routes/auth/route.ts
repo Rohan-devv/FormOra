@@ -1,9 +1,9 @@
 
 import { userService } from "../../services";
-import { publicProcedure, router } from "../../trpc";
-import { setAuthenticationCookie } from "../../utils/cookie";
+import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
+import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
 import { generatePath } from "../../utils/path-generator";
-import { createUserWithEmailandPasswordInputModel, createUserWithEmailandPasswordOutputModel, signInUserWithEmailandPasswordInputModel, signInUserWithEmailandPasswordOutputModel } from "./model";
+import { createUserWithEmailandPasswordInputModel, createUserWithEmailandPasswordOutputModel, getLoggedInUserInfoInputModel, getLoggedInUserInfoOutputModel, signInUserWithEmailandPasswordInputModel, signInUserWithEmailandPasswordOutputModel } from "./model";
 
 const TAGS = ["Authentication"];
 const getPath = generatePath("/authentication");
@@ -34,6 +34,8 @@ export const authRouter = router({
     } 
   }) ,
 
+
+
   signInUserWithEmailAndPassword: publicProcedure.meta({ openapi: { 
     method: 'POST',
     path: getPath('/signInUserwithEmailAndPassword'),
@@ -52,5 +54,34 @@ export const authRouter = router({
       id
      }
 
+  }), 
+  
+  
+  getLoggedInUserInfo: authenticatedProcedure.meta( 
+    { openapi: { 
+    method: 'GET',
+    path: getPath('/getLoggedInUserInfo'),
+    tags: TAGS
+
+  }}
+  )
+  .input(getLoggedInUserInfoInputModel)
+  .output(getLoggedInUserInfoOutputModel)
+  .query( async({ctx}) => {  
+
+    
+     const {id, email, fullName, profileImageUrl}  = await userService.getUserInfoById(ctx.user.id)
+    
+    
+    return { 
+      id, 
+      email, 
+      fullName, 
+      profileImageUrl
+
+    }
+
   })
+
+
 });

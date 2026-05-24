@@ -1,7 +1,8 @@
  'use client'
  
- import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
+import { Button } from "~/components/ui/button" 
+import {useRouter} from "next/navigation"
 import {
   Card,
   CardContent,
@@ -31,6 +32,9 @@ export function LoginForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
+  const utils = trpc.useUtils() 
+  const router = useRouter()
+ 
 
 
   function set(fields: keyof typeof values) {
@@ -48,8 +52,10 @@ export function LoginForm({
   }   
 
   const signInUserWithEmailAndPassword = trpc.auth.signInUserWithEmailAndPassword.useMutation({
-    onSuccess: () => {
-      setSubmitted(true)
+    onSuccess: async () => {
+      await utils.auth.getLoggedInUserInfo.invalidate()//Purana user data hatao / stale karo, ab server se fresh logged-in user lao.
+      setSubmitted(true) 
+      router.replace("/dashboard")
     },
     onError: (error) => {
       setSubmitted(false)

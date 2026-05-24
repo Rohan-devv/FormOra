@@ -53,7 +53,7 @@ export function setAuthenticationCookie(ctx: TRPCContext, accessToken: string) {
 
 export function getAuthenticationCookie(ctx: TRPCContext) {
   return ctx.getCookie('authentication-token')
-}  
+}
 
 export function clearAuthenticationCookie(ctx: TRPCContext) {
    ctx.clearCookie('authentication-token')

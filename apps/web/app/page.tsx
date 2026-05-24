@@ -1,14 +1,23 @@
 'use client';
-import {trpc} from "~/trpc/client"
+import {trpc} from "~/trpc/client" 
+import { useRouter } from 'next/navigation'
+import { useEffect } from "react";
+ 
 
 
-export default  function Home() {
-  
-  return (
-    <main className="min-h-screen min-w-screen flex justify-center items-center">
-      <div>
-        <h1>Hii</h1>
-      </div>
-    </main>
-  );
+export default  function Home() { 
+  const router = useRouter() 
+  const {data} = trpc.auth.getLoggedInUserInfo.useQuery()  
+
+  useEffect(()=> { 
+
+    if(data && data.id){
+      router.replace('/dashboard')
+    } else{
+      router.replace('/login')
+    }
+
+  }, [data])
+
+
 }

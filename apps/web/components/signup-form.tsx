@@ -1,5 +1,7 @@
  'use client'
- import { Github } from "lucide-react";
+ import { Github } from "lucide-react"; 
+
+ import {useRouter} from "next/navigation"
 
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
@@ -26,6 +28,9 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   })   
   const [errors, setErrors] = useState<Record<string, string>>({})
   const[submitted, setSubmitted] = useState(false)  
+  const utils = trpc.useUtils() 
+  const router = useRouter()
+   
 
   function set(field: keyof typeof values) {
     return  (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({...v, [field]: e.target.value}))
@@ -57,8 +62,10 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   }
 
   const createUserWithEmailAndPassword = trpc.auth.createUserwithEmailAndPassword.useMutation({
-    onSuccess: () => {
-      setSubmitted(true)
+    onSuccess: async () => {
+      await utils.auth.getLoggedInUserInfo.invalidate()
+      setSubmitted(true) 
+       router.replace("/dashboard")
     },
     onError: (error) => {
       setSubmitted(false)
