@@ -1,8 +1,20 @@
 import z from "zod";
-import { formService } from "../../services";
+import { formFieldService, formService } from "../../services";
 import { authenticatedProcedure, router } from "../../trpc";
 import { generatePath } from "../../utils/path-generator";
-import { createFormInputModel, createFormOutputModel, listFormsByUserIdOutputModel } from "./model";
+import {
+  createFieldInputModel,
+  createFieldOutputModel,
+  createFormInputModel,
+  createFormOutputModel,
+  deleteFieldInputModel,
+  deleteFieldOutputModel,
+  getFieldsInputModel,
+  getFieldsOutputModel,
+  listFormsByUserIdOutputModel,
+  updateFieldInputModel,
+  updateFieldOutputModel,
+} from "./model";
 
 const TAGS = ["Forms"];
 const getPath = generatePath("/forms");
@@ -13,8 +25,8 @@ export const formRouter = router({
       openapi: {
         method: "POST",
         path: getPath("/createForm"),
-        tags: TAGS, 
-        protect: true
+        tags: TAGS,
+        protect: true,
       },
     })
     .input(createFormInputModel)
@@ -29,30 +41,85 @@ export const formRouter = router({
       });
 
       return { id };
-    }),  
+    }),
 
-    listForms: authenticatedProcedure.meta({ openapi: {
-      method: "GET",
+  listForms: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
         path: getPath("/listForms"),
-        tags: TAGS, 
-        protect: true
-    }})
+        tags: TAGS,
+        protect: true,
+      },
+    })
     .input(z.undefined())
     .output(listFormsByUserIdOutputModel)
-    .query( async( { ctx } ) => { 
+    .query(async ({ ctx }) => {
+      const forms = await formService.listFormsByUserId({ userId: ctx.user.id });
+      return forms;
+    }),
 
-      const forms  = await formService.listFormsByUserId({userId: ctx.user.id}) 
-      return forms 
+  createField: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/createField"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(createFieldInputModel)
+    .output(createFieldOutputModel)
+    .mutation(async ({ input }) => {
+      const field = await formFieldService.createField(input);
+      return field;
+    }),
 
-    })  
+  updateField: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "PATCH",
+        path: getPath("/updateField"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(updateFieldInputModel)
+    .output(updateFieldOutputModel)
+    .mutation(async ({ input }) => {
+      const field = await formFieldService.updateField(input);
+      return field;
+    }),
 
-    /* 
-    
-    DB return: title: string | null
-    API expects: title: string
+  deleteField: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: getPath("/deleteField"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(deleteFieldInputModel)
+    .output(deleteFieldOutputModel)
+    .mutation(async ({ input }) => {
+      const field = await formFieldService.deleteField(input);
+      return field;
+    }),
 
-    Short me: database bol raha hai title null ho sakta hai, API schema bol raha hai title null nahi ho sakta. Dono match nahi kar rahe.
-
-    */ 
-
+  getFields: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getFields"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(getFieldsInputModel)
+    .output(getFieldsOutputModel)
+    .query(async ({ input }) => {
+      const fields = await formFieldService.getFields(input);
+      return fields;
+    }),
 });

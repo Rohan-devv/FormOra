@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, CalendarDays, FileText, Loader2, Plus, RefreshCw } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -47,6 +48,8 @@ export default function FormsPage() {
   const [open, setOpen] = useState(false);
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // yaha pe humne backend call ki hai
   const utils = trpc.useUtils();
   const formsQuery = trpc.form.listForms.useQuery();
   const forms = formsQuery.data ?? [];
@@ -181,25 +184,27 @@ export default function FormsPage() {
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {forms.map((form) => (
-                  <Card key={form.id} className="gap-4 rounded-md">
-                    <CardHeader className="gap-3">
-                      <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
-                        <FileText className="size-5" />
-                      </div>
-                      <div className="space-y-1">
-                        <CardTitle className="line-clamp-2 text-base leading-6">
-                          {form.title}
-                        </CardTitle>
-                        <CardDescription className="line-clamp-2">
-                          {form.description || "No description"}
-                        </CardDescription>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CalendarDays className="size-4" />
-                      <span>Created {formatDate(form.createdAt)}</span>
-                    </CardContent>
-                  </Card>
+                  <Link key={form.id} href={`/dashboard/forms/${form.id}`} className="block">
+                    <Card className="h-full gap-4 rounded-md transition-colors hover:border-primary/40 hover:bg-muted/30">
+                      <CardHeader className="gap-3">
+                        <div className="flex size-10 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                          <FileText className="size-5" />
+                        </div>
+                        <div className="space-y-1">
+                          <CardTitle className="line-clamp-2 text-base leading-6">
+                            {form.title}
+                          </CardTitle>
+                          <CardDescription className="line-clamp-2">
+                            {form.description || "No description"}
+                          </CardDescription>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <CalendarDays className="size-4" />
+                        <span>Created {formatDate(form.createdAt)}</span>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             )}
