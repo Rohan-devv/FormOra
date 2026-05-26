@@ -1,0 +1,6 @@
+
+> @repo/api@1.0.0 dev C:\Users\rohan\trpc-monorepo\apps\api
+> dotenv -- tsx watch ./src/index.ts
+
+2026-05-26 03:06:11 [[34mdebug[39m]: openapi.json: http://localhost:8000/openapi.json
+2026-05-26 03:06:11 [[34mdebug[39m]: docs: http://localhost:8000/docs

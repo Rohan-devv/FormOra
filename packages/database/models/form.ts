@@ -11,7 +11,7 @@ import { usersTable } from "./user";
 export const formsTable = pgTable("forms", {
   id: uuid("id").primaryKey().defaultRandom(), 
 
-  title: varchar('title',  {length: 50}),
+  title: varchar('title',  {length: 50}).notNull(),
   description: varchar('description', {length: 150}), 
 
   createdBy: uuid('created_by').references(()=> usersTable.id) ,

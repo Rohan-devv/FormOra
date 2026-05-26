@@ -9,7 +9,7 @@ const TAGS = ["Authentication"];
 const getPath = generatePath("/authentication");
 
 
-// ye hai humara procedure
+// ye hai humara procedure  
 export const authRouter = router({
   createUserwithEmailAndPassword: publicProcedure.meta({ openapi: { 
     method: 'POST',
@@ -29,8 +29,7 @@ export const authRouter = router({
     setAuthenticationCookie(ctx, token)
 
     return {
-      id
-      
+      id 
     } 
   }) ,
 
@@ -61,7 +60,8 @@ export const authRouter = router({
     { openapi: { 
     method: 'GET',
     path: getPath('/getLoggedInUserInfo'),
-    tags: TAGS
+    tags: TAGS,
+    protect: true
 
   }}
   )
