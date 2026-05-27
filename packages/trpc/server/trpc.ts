@@ -15,6 +15,7 @@ export const authenticatedProcedure = tRPCContext.procedure.use(async (options) 
   const { ctx } = options;
 
   /*
+  ======================--- ye options object hai! ---============================
 {
   ctx: {
     createCookie: function,
