@@ -103,7 +103,9 @@ class UserService {
     const { id } = await this.verifyUserToken(token); 
     
     return {id}
-  } 
+  }  
+
+ 
   
 }
 

@@ -14,7 +14,8 @@ import {
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import { useState } from "react";
-import { trpc } from "~/trpc/client";
+import { trpc } from "~/trpc/client"; 
+import toast from "react-hot-toast"
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {   
 
@@ -64,12 +65,14 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const createUserWithEmailAndPassword = trpc.auth.createUserwithEmailAndPassword.useMutation({
     onSuccess: async () => {
       await utils.auth.getLoggedInUserInfo.invalidate()
-      setSubmitted(true) 
+      setSubmitted(true)  
+      toast.success("Account created successfully")
        router.replace("/dashboard")
     },
     onError: (error) => {
       setSubmitted(false)
       setErrors((currentErrors) => ({ ...currentErrors, root: error.message }))
+      toast.error(error.message)
     },
   })
 

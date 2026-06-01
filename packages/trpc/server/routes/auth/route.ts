@@ -1,7 +1,7 @@
 
 import { userService } from "../../services";
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
-import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
+import { clearAuthenticationCookie, getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
 import { generatePath } from "../../utils/path-generator";
 import { createUserWithEmailandPasswordInputModel, createUserWithEmailandPasswordOutputModel, getLoggedInUserInfoInputModel, getLoggedInUserInfoOutputModel, signInUserWithEmailandPasswordInputModel, signInUserWithEmailandPasswordOutputModel } from "./model";
 
@@ -29,7 +29,8 @@ export const authRouter = router({
     setAuthenticationCookie(ctx, token)
 
     return {
-      id 
+      id,
+      fullName 
     } 
   }) ,
 
@@ -81,6 +82,16 @@ export const authRouter = router({
 
     }
 
+  }),
+
+  logoutUser: publicProcedure
+  .mutation(({ ctx }) => {
+
+    clearAuthenticationCookie(ctx) 
+    
+    return {
+      success: true
+    }
   })
 
 

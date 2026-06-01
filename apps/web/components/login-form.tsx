@@ -18,7 +18,8 @@ import {
 } from "~/components/ui/field"
 import { Input } from "~/components/ui/input"
 import { useState } from "react"
-import { trpc } from "~/trpc/client"
+import { trpc } from "~/trpc/client" 
+import toast from "react-hot-toast"
 
 export function LoginForm({
   className,
@@ -55,11 +56,13 @@ export function LoginForm({
     onSuccess: async () => {
       await utils.auth.getLoggedInUserInfo.invalidate()//Purana user data hatao / stale karo, ab server se fresh logged-in user lao.
       setSubmitted(true) 
+      toast.success("Logged in successfully")  
       router.replace("/dashboard")
     },
     onError: (error) => {
       setSubmitted(false)
       setErrors((currentErrors) => ({ ...currentErrors, root: error.message }))
+      toast.error(error.message)
     },
   })
 

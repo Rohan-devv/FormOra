@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { GalleryVerticalEnd } from "lucide-react";
 
-import { SignupForm } from "~/components/signup-form";
+import { SignupForm } from "~/components/signup-form"; 
+import Toast, { Toaster } from "react-hot-toast"
 
 export default function SignupPage() {
   return (
@@ -24,7 +25,8 @@ export default function SignupPage() {
             </a>
           </header>
           <div className="relative flex flex-1 items-center justify-center py-8">
-            <div className="w-full max-w-[460px]">
+            <div className="w-full max-w-[460px]"> 
+              <Toaster/>
               <SignupForm />
             </div>
           </div>
