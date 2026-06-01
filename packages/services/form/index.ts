@@ -1,6 +1,7 @@
-import {db, eq} from "@repo/database"  
+import {asc, db, eq} from "@repo/database"
 import {formsTable} from "@repo/database/models/form"
-import { createFormInput, CreateFormInputType, ListallFormsInputType, listFormsByUserIdInput } from "./model";
+import { formsFieldsTable } from "@repo/database/models/form-field";
+import { createFormInput, CreateFormInputType, getPublicFormByIdInput, GetPublicFormByIdInputType, ListallFormsInputType, listFormsByUserIdInput } from "./model";
 import { usersTable } from "@repo/database/models/user";
 
 
@@ -47,6 +48,42 @@ class FormService {
 
     return forms
   }  
+
+  public async getPublicFormById(payload: GetPublicFormByIdInputType) {
+    const { formId } = await getPublicFormByIdInput.parseAsync(payload)
+
+    const formResult = await db.select({
+      id: formsTable.id,
+      title: formsTable.title,
+      description: formsTable.description,
+    })
+    .from(formsTable)
+    .where(eq(formsTable.id, formId))
+    .limit(1)
+
+    const form = formResult[0]
+
+    if (!form) throw new Error(`form with ${formId} does not exist`)
+
+    const fields = await db.select({
+      id: formsFieldsTable.id,
+      label: formsFieldsTable.label,
+      labelKey: formsFieldsTable.label_key,
+      description: formsFieldsTable.description,
+      placeholder: formsFieldsTable.placeholder,
+      isRequired: formsFieldsTable.isRequired,
+      index: formsFieldsTable.index,
+      type: formsFieldsTable.type,
+    })
+    .from(formsFieldsTable)
+    .where(eq(formsFieldsTable.formId, formId))
+    .orderBy(asc(formsFieldsTable.index))
+
+    return {
+      ...form,
+      fields,
+    }
+  }
 
   
 }

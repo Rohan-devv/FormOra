@@ -13,3 +13,9 @@ export const listFormsByUserIdInput = z.object({
 }) 
 
 export type ListallFormsInputType = z.infer<typeof listFormsByUserIdInput> 
+
+export const getPublicFormByIdInput = z.object({
+  formId: z.string().uuid().describe("uuid of the publicly shared form"),
+})
+
+export type GetPublicFormByIdInputType = z.infer<typeof getPublicFormByIdInput>

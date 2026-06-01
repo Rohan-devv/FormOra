@@ -21,6 +21,28 @@ export const listFormsByUserIdOutputModel = z.array(
 
 const fieldTypeEnum = z.enum(["TEXT", "NUMBER", "EMAIL", "YES_NO", "PASSWORD"]);
 
+export const getPublicFormInputModel = z.object({
+  formId: z.string().uuid().describe("UUID of the publicly shared form"),
+});
+
+export const getPublicFormOutputModel = z.object({
+  id: z.string().describe("id of the shared form"),
+  title: z.string().describe("title of the shared form"),
+  description: z.string().nullable().describe("description of the shared form"),
+  fields: z.array(
+    z.object({
+      id: z.string().describe("id of the field"),
+      label: z.string().describe("display label of the field"),
+      labelKey: z.string().describe("stable key generated from the field label"),
+      description: z.string().nullable().describe("helper text shown below the field"),
+      placeholder: z.string().nullable().describe("placeholder text of the field"),
+      isRequired: z.boolean().describe("whether the field is required or not"),
+      index: z.string().describe("field position inside the form"),
+      type: fieldTypeEnum.describe("type of the field"),
+    }),
+  ),
+});
+
 export const createFieldInputModel = z.object({
   label: z.string().max(100).describe("Display label of the field"),
   description: z.string().max(100).optional().describe("helper text shown below the field"),
@@ -42,10 +64,10 @@ export const createFieldOutputModel = z.object({
 
 export const updateFieldInputModel = z.object({
   fieldId: z.string().uuid().describe("field id we want to update"),
-  label: z.string().max(50).describe("Updated display label"),
+  label: z.string().max(100).describe("Updated display label"),
   type: fieldTypeEnum.optional().describe("Updated type of the field"),
-  description: z.string().optional().nullable().describe("Updated helper text"),
-  placeholder: z.string().optional().nullable().describe("Updated placeholder text"),
+  description: z.string().max(100).optional().nullable().describe("Updated helper text"),
+  placeholder: z.string().max(50).optional().nullable().describe("Updated placeholder text"),
   isRequired: z.boolean().optional().default(false).describe("Updated required flag"),
 });
 

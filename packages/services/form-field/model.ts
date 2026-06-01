@@ -17,10 +17,10 @@ export type CreateFieldInputType = z.infer<typeof createFieldInput>
 
 export const updateFieldInput = z.object({
     fieldId: z.string().uuid().describe('field Id we want to update'),
-    label:z.string().max(50).describe('Updated display label'), 
+    label:z.string().max(100).describe('Updated display label'),
     type: fieldTypeEnum.optional().describe('Updated type of the field'),
-    description: z.string().optional().nullable().describe('Updated Helper Text'),
-    placeholder: z.string().optional().nullable().describe('Updated placeholder Text'), 
+    description: z.string().max(100).optional().nullable().describe('Updated Helper Text'),
+    placeholder: z.string().max(50).optional().nullable().describe('Updated placeholder Text'),
     isRequired:  z.boolean().optional().default(false).describe('Updated required Flag'),
 
 })  
